@@ -10,7 +10,7 @@ const Grid: FC<GridProps> = ({ minWidth, gap, align, children }) => {
   const style: CSSProperties = {
     display: 'grid',
     gridTemplateColumns: `repeat(auto-fill, minmax(${minWidth}px, 1fr))`,
-    gap: typeof gap === 'number' ? `${gap}` : `${gap}rem`,
+    gap: typeof gap === 'number' ? `${gap}rem` : `${gap}`,
   }
   if (align) {
     style.alignItems = `flex-${align}`
