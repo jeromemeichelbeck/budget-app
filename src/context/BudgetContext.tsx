@@ -5,17 +5,40 @@ import { Budget, BudgetDTO } from '../types/Budget'
 import { Expense, ExpenseDTO } from '../types/Expense'
 import { Storage } from '../types/Storage'
 
-const BudgetContext = createContext({})
+interface BudgetContextInterface {
+  budgets: Budget[]
+  expenses: Expense[]
+  getBudgetExpenses: (budgetId: Budget['id']) => Expense[]
+  addBudget: (newBudget: BudgetDTO) => void
+  deleteBudgetById: (budgetId: Budget['id']) => void
+  addExpense: (newExpense: ExpenseDTO, budgetId: Budget['id']) => void
+  deleteExpenseById: (expenseId: Expense['id']) => void
+}
 
-export const useBudget = () => {
-  return useContext(BudgetContext)
+const defaultBudgetContectValue: BudgetContextInterface = {
+  budgets: [],
+  expenses: [],
+  getBudgetExpenses: (budgetId: Budget['id']) => [],
+  addBudget: (newBudget: BudgetDTO) => {},
+  deleteBudgetById: (budgetId: Budget['id']) => {},
+  addExpense: (newExpense: ExpenseDTO, budgetId: Budget['id']) => {},
+  deleteExpenseById: (expenseId: Expense['id']) => {},
+}
+
+const BudgetContext = createContext(defaultBudgetContectValue)
+
+export const useBudgets = () => {
+  return useContext<BudgetContextInterface>(BudgetContext)
 }
 
 export const BudgetProvider: FC = ({ children }) => {
-  const [budgets, setBudgets] = useLocalStorage<Budget[]>(Storage.BUDGETS, [])
+  const [budgets, setBudgets] = useLocalStorage<Budget[]>(
+    Storage.BUDGETS,
+    defaultBudgetContectValue.budgets
+  )
   const [expenses, setExpenses] = useLocalStorage<Expense[]>(
     Storage.EXPENSES,
-    []
+    defaultBudgetContectValue.expenses
   )
 
   const getBudgetExpenses = (budgetId: Budget['id']) =>
