@@ -15,7 +15,7 @@ interface BudgetContextInterface {
   openAddExpenseForm: (budgetId?: Budget['id']) => void
   closeAddExpenseForm: () => void
   selectedBudgetId?: Budget['id']
-  getBudgetExpenses: (budgetId: Budget['id']) => Expense[]
+  getBudgetExpenses: (budgetId?: Budget['id']) => Expense[]
   addBudget: (newBudget: BudgetDTO) => void
   deleteBudgetById: (budgetId: Budget['id']) => void
   addExpense: (newExpense: ExpenseDTO, budgetId: Budget['id'] | null) => void
@@ -32,7 +32,7 @@ const defaultBudgetContectValue: BudgetContextInterface = {
   openAddExpenseForm: () => {},
   closeAddExpenseForm: () => {},
   selectedBudgetId: undefined,
-  getBudgetExpenses: (budgetId: Budget['id']) => [],
+  getBudgetExpenses: (budgetId?: Budget['id']) => [],
   addBudget: (newBudget: BudgetDTO) => {},
   deleteBudgetById: (budgetId: Budget['id']) => {},
   addExpense: (newExpense: ExpenseDTO, budgetId: Budget['id'] | null) => {},
@@ -79,8 +79,8 @@ export const BudgetProvider: FC = ({ children }) => {
     setShowAddExpenseForm(false)
   }
 
-  const getBudgetExpenses = (budgetId: Budget['id']) =>
-    expenses.filter((expense) => expense.budgetId === budgetId)
+  const getBudgetExpenses = (budgetId?: Budget['id']) =>
+    expenses.filter((expense) => expense.budgetId === (budgetId || null))
 
   const addBudget = (newBudget: BudgetDTO) => {
     setBudgets((currentBudgets) => {

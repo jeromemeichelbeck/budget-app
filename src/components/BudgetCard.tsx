@@ -7,11 +7,12 @@ import BudgetProgressBar from './BudgetProgressBar'
 import CurrencyFormatter from './CurrencyFormatter'
 
 interface BudgetCardProps {
-  id: Budget['id']
+  id?: Budget['id']
   name: Budget['name']
   amount: Expense['amount']
-  maxAmount: number
+  maxAmount?: number
   gray?: boolean
+  hideButtons?: boolean
 }
 
 const BudgetCard: FC<BudgetCardProps> = ({
@@ -19,15 +20,20 @@ const BudgetCard: FC<BudgetCardProps> = ({
   name,
   amount,
   maxAmount,
-  gray = false,
+  gray,
+  hideButtons,
 }) => {
   const { openAddExpenseForm } = useBudgets()
 
   const classNames: string[] = []
-  if (amount > maxAmount) {
+  if (maxAmount && amount > maxAmount) {
     classNames.push('bg-danger', 'bg-opacity-10')
   } else if (gray) {
     classNames.push('bg-light')
+  }
+
+  if (!maxAmount && !amount) {
+    return null
   }
 
   return (
@@ -37,25 +43,32 @@ const BudgetCard: FC<BudgetCardProps> = ({
           <div className="me-2">{name}</div>
           <div className="d-flex align-items-baseline">
             <CurrencyFormatter amount={amount} />
-            <span className="text-muted fs-6 ms-2">
-              {'/ '}
-              <CurrencyFormatter amount={maxAmount} />
-            </span>
+            {maxAmount && (
+              <span className="text-muted fs-6 ms-2">
+                {'/ '}
+                <CurrencyFormatter amount={maxAmount} />
+              </span>
+            )}
           </div>
         </Card.Title>
-        <BudgetProgressBar amount={amount} maxAmount={maxAmount} />
-        <Stack direction="horizontal" gap={2} className="mt-4">
-          <Button
-            variant="outline-primary"
-            className="ms-auto"
-            onClick={() => {
-              openAddExpenseForm(id)
-            }}
-          >
-            Add Expense
-          </Button>
-          <Button variant="outline-secondary">View Expenses</Button>
-        </Stack>
+        {maxAmount && (
+          <BudgetProgressBar amount={amount} maxAmount={maxAmount} />
+        )}
+
+        {!hideButtons && (
+          <Stack direction="horizontal" gap={2} className="mt-4">
+            <Button
+              variant="outline-primary"
+              className="ms-auto"
+              onClick={() => {
+                openAddExpenseForm(id)
+              }}
+            >
+              Add Expense
+            </Button>
+            <Button variant="outline-secondary">View Expenses</Button>
+          </Stack>
+        )}
       </Card.Body>
     </Card>
   )
