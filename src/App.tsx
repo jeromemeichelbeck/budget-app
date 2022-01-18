@@ -4,6 +4,7 @@ import AddBudgetModal from './components/AddBudgetModal'
 import AddExpenseModal from './components/AddExpenseModal'
 import BudgetList from './components/BudgetList'
 import Header from './components/Header'
+import ViewExpensesModal from './components/ViewExpensesModal'
 import { BudgetProvider, useBudgets } from './context/BudgetContext'
 
 interface AppProps {}
@@ -19,6 +20,7 @@ const App: FC<AppProps> = () => {
       </Container>
       <AddBudgetModal />
       <AddExpenseModal />
+      <ViewExpensesModal />
     </BudgetProvider>
   )
 }

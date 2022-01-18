@@ -14,6 +14,9 @@ interface BudgetContextInterface {
   showAddExpenseForm: boolean
   openAddExpenseForm: (budgetId?: Budget['id']) => void
   closeAddExpenseForm: () => void
+  showViewExpenses: boolean
+  openViewExpenses: (budgetId?: Budget['id']) => void
+  closeViewExpenses: () => void
   selectedBudgetId?: Budget['id']
   getBudgetExpenses: (budgetId?: Budget['id']) => Expense[]
   addBudget: (newBudget: BudgetDTO) => void
@@ -31,12 +34,15 @@ const defaultBudgetContectValue: BudgetContextInterface = {
   showAddExpenseForm: false,
   openAddExpenseForm: () => {},
   closeAddExpenseForm: () => {},
+  showViewExpenses: false,
+  openViewExpenses: () => {},
+  closeViewExpenses: () => {},
   selectedBudgetId: undefined,
-  getBudgetExpenses: (budgetId?: Budget['id']) => [],
-  addBudget: (newBudget: BudgetDTO) => {},
-  deleteBudgetById: (budgetId: Budget['id']) => {},
-  addExpense: (newExpense: ExpenseDTO, budgetId: Budget['id'] | null) => {},
-  deleteExpenseById: (expenseId: Expense['id']) => {},
+  getBudgetExpenses: () => [],
+  addBudget: () => {},
+  deleteBudgetById: () => {},
+  addExpense: () => {},
+  deleteExpenseById: () => {},
 }
 
 const BudgetContext = createContext(defaultBudgetContectValue)
@@ -58,6 +64,9 @@ export const BudgetProvider: FC = ({ children }) => {
   const [showAddExpenseForm, setShowAddExpenseForm] = useState<
     BudgetContextInterface['showAddExpenseForm']
   >(defaultBudgetContectValue.showAddExpenseForm)
+  const [showViewExpenses, setShowViewExpenses] = useState<
+    BudgetContextInterface['showViewExpenses']
+  >(defaultBudgetContectValue.showAddExpenseForm)
   const [selectedBudgetId, selectBudgetId] = useState<
     BudgetContextInterface['selectedBudgetId']
   >(defaultBudgetContectValue.selectedBudgetId)
@@ -77,6 +86,15 @@ export const BudgetProvider: FC = ({ children }) => {
 
   const closeAddExpenseForm = () => {
     setShowAddExpenseForm(false)
+  }
+
+  const openViewExpenses = (budgetId?: Budget['id']) => {
+    selectBudgetId(budgetId)
+    setShowViewExpenses(true)
+  }
+
+  const closeViewExpenses = () => {
+    setShowViewExpenses(false)
   }
 
   const getBudgetExpenses = (budgetId?: Budget['id']) =>
@@ -131,6 +149,9 @@ export const BudgetProvider: FC = ({ children }) => {
         showAddExpenseForm,
         openAddExpenseForm,
         closeAddExpenseForm,
+        showViewExpenses,
+        openViewExpenses,
+        closeViewExpenses,
         selectedBudgetId,
         getBudgetExpenses,
         addExpense,

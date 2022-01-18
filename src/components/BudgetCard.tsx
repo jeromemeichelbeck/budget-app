@@ -23,7 +23,7 @@ const BudgetCard: FC<BudgetCardProps> = ({
   gray,
   hideButtons,
 }) => {
-  const { openAddExpenseForm } = useBudgets()
+  const { openAddExpenseForm, openViewExpenses } = useBudgets()
 
   const classNames: string[] = []
   if (maxAmount && amount > maxAmount) {
@@ -66,7 +66,14 @@ const BudgetCard: FC<BudgetCardProps> = ({
             >
               Add Expense
             </Button>
-            <Button variant="outline-secondary">View Expenses</Button>
+            <Button
+              variant="outline-secondary"
+              onClick={() => {
+                openViewExpenses(id)
+              }}
+            >
+              View Expenses
+            </Button>
           </Stack>
         )}
       </Card.Body>
