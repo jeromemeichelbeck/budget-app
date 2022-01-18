@@ -1,21 +1,28 @@
 import { FC } from 'react'
 import { Button, Card, Stack } from 'react-bootstrap'
+import { useBudgets } from '../context/BudgetContext'
+import { Budget } from '../types/Budget'
+import { Expense } from '../types/Expense'
 import BudgetProgressBar from './BudgetProgressBar'
 import CurrencyFormatter from './CurrencyFormatter'
 
 interface BudgetCardProps {
-  name: string
-  amount: number
+  id: Budget['id']
+  name: Budget['name']
+  amount: Expense['amount']
   maxAmount: number
   gray?: boolean
 }
 
 const BudgetCard: FC<BudgetCardProps> = ({
+  id,
   name,
   amount,
   maxAmount,
   gray = false,
 }) => {
+  const { openAddExpenseForm } = useBudgets()
+
   const classNames: string[] = []
   if (amount > maxAmount) {
     classNames.push('bg-danger', 'bg-opacity-10')
@@ -38,7 +45,13 @@ const BudgetCard: FC<BudgetCardProps> = ({
         </Card.Title>
         <BudgetProgressBar amount={amount} maxAmount={maxAmount} />
         <Stack direction="horizontal" gap={2} className="mt-4">
-          <Button variant="outline-primary" className="ms-auto">
+          <Button
+            variant="outline-primary"
+            className="ms-auto"
+            onClick={() => {
+              openAddExpenseForm(id)
+            }}
+          >
             Add Expense
           </Button>
           <Button variant="outline-secondary">View Expenses</Button>

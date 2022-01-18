@@ -1,4 +1,4 @@
-import { createContext, FC, useContext } from 'react'
+import { createContext, FC, useContext, useState } from 'react'
 import { v4 as createId } from 'uuid'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { Budget, BudgetDTO } from '../types/Budget'
@@ -8,20 +8,34 @@ import { Storage } from '../types/Storage'
 interface BudgetContextInterface {
   budgets: Budget[]
   expenses: Expense[]
+  showAddBudgetForm: boolean
+  openAddBudgetForm: () => void
+  closeAddBudgetForm: () => void
+  showAddExpenseForm: boolean
+  openAddExpenseForm: (budgetId?: Budget['id']) => void
+  closeAddExpenseForm: () => void
+  selectedBudgetId?: Budget['id']
   getBudgetExpenses: (budgetId: Budget['id']) => Expense[]
   addBudget: (newBudget: BudgetDTO) => void
   deleteBudgetById: (budgetId: Budget['id']) => void
-  addExpense: (newExpense: ExpenseDTO, budgetId: Budget['id']) => void
+  addExpense: (newExpense: ExpenseDTO, budgetId: Budget['id'] | null) => void
   deleteExpenseById: (expenseId: Expense['id']) => void
 }
 
 const defaultBudgetContectValue: BudgetContextInterface = {
   budgets: [],
   expenses: [],
+  showAddBudgetForm: false,
+  openAddBudgetForm: () => {},
+  closeAddBudgetForm: () => {},
+  showAddExpenseForm: false,
+  openAddExpenseForm: () => {},
+  closeAddExpenseForm: () => {},
+  selectedBudgetId: undefined,
   getBudgetExpenses: (budgetId: Budget['id']) => [],
   addBudget: (newBudget: BudgetDTO) => {},
   deleteBudgetById: (budgetId: Budget['id']) => {},
-  addExpense: (newExpense: ExpenseDTO, budgetId: Budget['id']) => {},
+  addExpense: (newExpense: ExpenseDTO, budgetId: Budget['id'] | null) => {},
   deleteExpenseById: (expenseId: Expense['id']) => {},
 }
 
@@ -32,14 +46,38 @@ export const useBudgets = () => {
 }
 
 export const BudgetProvider: FC = ({ children }) => {
-  const [budgets, setBudgets] = useLocalStorage<Budget[]>(
-    Storage.BUDGETS,
-    defaultBudgetContectValue.budgets
-  )
-  const [expenses, setExpenses] = useLocalStorage<Expense[]>(
-    Storage.EXPENSES,
-    defaultBudgetContectValue.expenses
-  )
+  const [budgets, setBudgets] = useLocalStorage<
+    BudgetContextInterface['budgets']
+  >(Storage.BUDGETS, defaultBudgetContectValue.budgets)
+  const [expenses, setExpenses] = useLocalStorage<
+    BudgetContextInterface['expenses']
+  >(Storage.EXPENSES, defaultBudgetContectValue.expenses)
+  const [showAddBudgetForm, setShowAddBudgetForm] = useState<
+    BudgetContextInterface['showAddBudgetForm']
+  >(defaultBudgetContectValue.showAddBudgetForm)
+  const [showAddExpenseForm, setShowAddExpenseForm] = useState<
+    BudgetContextInterface['showAddExpenseForm']
+  >(defaultBudgetContectValue.showAddExpenseForm)
+  const [selectedBudgetId, selectBudgetId] = useState<
+    BudgetContextInterface['selectedBudgetId']
+  >(defaultBudgetContectValue.selectedBudgetId)
+
+  const openAddBudgetForm = () => {
+    setShowAddBudgetForm(true)
+  }
+
+  const closeAddBudgetForm = () => {
+    setShowAddBudgetForm(false)
+  }
+
+  const openAddExpenseForm = (budgetId?: Budget['id']) => {
+    selectBudgetId(budgetId)
+    setShowAddExpenseForm(true)
+  }
+
+  const closeAddExpenseForm = () => {
+    setShowAddExpenseForm(false)
+  }
 
   const getBudgetExpenses = (budgetId: Budget['id']) =>
     expenses.filter((expense) => expense.budgetId === budgetId)
@@ -69,7 +107,7 @@ export const BudgetProvider: FC = ({ children }) => {
     )
   }
 
-  const addExpense = (expense: ExpenseDTO, budgetId: Budget['id']) => {
+  const addExpense = (expense: ExpenseDTO, budgetId: Budget['id'] | null) => {
     setExpenses((currentExpenses) => [
       ...currentExpenses,
       { ...expense, id: createId(), budgetId },
@@ -87,6 +125,13 @@ export const BudgetProvider: FC = ({ children }) => {
       value={{
         budgets,
         expenses,
+        showAddBudgetForm,
+        openAddBudgetForm,
+        closeAddBudgetForm,
+        showAddExpenseForm,
+        openAddExpenseForm,
+        closeAddExpenseForm,
+        selectedBudgetId,
         getBudgetExpenses,
         addExpense,
         addBudget,

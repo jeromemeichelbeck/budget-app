@@ -2,15 +2,11 @@ import { FC, FormEventHandler, useRef } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
 import { useBudgets } from '../context/BudgetContext'
 
-interface AddBudgetModalProps {
-  show?: boolean
-  handleCloseAddBudgetForm: () => void
-}
+interface AddBudgetModalProps {}
 
-const AddBudgetModal: FC<AddBudgetModalProps> = ({
-  show = false,
-  handleCloseAddBudgetForm,
-}) => {
+const AddBudgetModal: FC<AddBudgetModalProps> = () => {
+  const { showAddBudgetForm, closeAddBudgetForm } = useBudgets()
+
   const nameRef = useRef<HTMLInputElement>(null)
   const maxAmountRef = useRef<HTMLInputElement>(null)
   const { addBudget } = useBudgets()
@@ -23,12 +19,17 @@ const AddBudgetModal: FC<AddBudgetModalProps> = ({
         name: nameRef.current.value,
         maxAmount: parseFloat(maxAmountRef.current.value),
       })
-      handleCloseAddBudgetForm()
+      closeAddBudgetForm()
     }
   }
 
   return (
-    <Modal show={show} onHide={handleCloseAddBudgetForm}>
+    <Modal
+      show={showAddBudgetForm}
+      onHide={() => {
+        closeAddBudgetForm()
+      }}
+    >
       <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
           <Modal.Title>New Budget</Modal.Title>

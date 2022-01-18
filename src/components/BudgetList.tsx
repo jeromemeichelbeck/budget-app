@@ -13,6 +13,7 @@ const BudgetList: FC<BudgetListProps> = () => {
       {budgets.map(({ id, name, maxAmount }) => (
         <BudgetCard
           key={id}
+          id={id}
           name={name}
           amount={getBudgetExpenses(id).reduce(
             (total, expense) => total + expense.amount,
