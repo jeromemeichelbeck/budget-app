@@ -9,9 +9,9 @@ const AddOrEditBudgetModal: FC<AddOrEditBudgetModalProps> = () => {
   const {
     selectedBudgetId,
     budgets,
-    showAddBudgetForm,
-    addOrEditBudget: addBudget,
-    closeAddBudgetForm,
+    showAddOrEditBudgetForm: showAddBudgetForm,
+    addOrEditBudget,
+    closeAddOrEditBudgetForm,
   } = useBudgets()
 
   const [currentBudget, setCurrentBudget] = useState<Budget>()
@@ -38,20 +38,21 @@ const AddOrEditBudgetModal: FC<AddOrEditBudgetModalProps> = () => {
     e.preventDefault()
 
     if (nameRef.current?.value && maxAmountRef.current?.value) {
-      addBudget({
+      addOrEditBudget({
         id: selectedBudgetId,
         name: nameRef.current.value,
         maxAmount: parseFloat(maxAmountRef.current.value),
       })
-      closeAddBudgetForm()
+      closeAddOrEditBudgetForm()
     }
   }
 
   return (
     <Modal
       show={showAddBudgetForm}
+      centered
       onHide={() => {
-        closeAddBudgetForm()
+        closeAddOrEditBudgetForm()
       }}
     >
       <Form onSubmit={handleSubmit}>

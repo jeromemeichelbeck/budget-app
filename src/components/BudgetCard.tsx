@@ -24,8 +24,12 @@ const BudgetCard: FC<BudgetCardProps> = ({
   gray,
   hideButtons,
 }) => {
-  const { openAddExpenseForm, openViewExpenses, openAddOrEditBudgetForm } =
-    useBudgets()
+  const {
+    openAddExpenseForm,
+    openViewExpenses,
+    openAddOrEditBudgetForm,
+    openConfirmDeleteBudget,
+  } = useBudgets()
 
   const classNames: string[] = []
   if (maxAmount && amount > maxAmount) {
@@ -103,7 +107,9 @@ const BudgetCard: FC<BudgetCardProps> = ({
                   size="sm"
                   title={`Delete ${name} Budget`}
                   onClick={() => {
-                    console.log(`delete budget ${id}: "${name}"`)
+                    if (id) {
+                      openConfirmDeleteBudget(id)
+                    }
                   }}
                 >
                   <FontAwesomeIcon icon="trash" />

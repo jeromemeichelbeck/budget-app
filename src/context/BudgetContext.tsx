@@ -8,15 +8,21 @@ import { Storage } from '../types/Storage'
 interface BudgetContextInterface {
   budgets: Budget[]
   expenses: Expense[]
-  showAddBudgetForm: boolean
+  showAddOrEditBudgetForm: boolean
   openAddOrEditBudgetForm: (budgetId?: Budget['id']) => void
-  closeAddBudgetForm: () => void
+  closeAddOrEditBudgetForm: () => void
   showAddExpenseForm: boolean
   openAddExpenseForm: (budgetId?: Budget['id']) => void
   closeAddExpenseForm: () => void
   showViewExpenses: boolean
   openViewExpenses: (budgetId?: Budget['id']) => void
   closeViewExpenses: () => void
+  showConfirmDeleteBudget: boolean
+  openConfirmDeleteBudget: (budgetId: Budget['id']) => void
+  closeConfirmDeleteBudget: () => void
+  showConfirmDeleteExpense: boolean
+  openConfirmDeleteExpense: (expenseId: Expense['id']) => void
+  closeConfirmDeleteExpense: () => void
   selectedBudgetId?: Budget['id']
   getBudgetExpenses: (budgetId?: Budget['id']) => Expense[]
   addOrEditBudget: (newBudget: BudgetDTO) => void
@@ -28,15 +34,21 @@ interface BudgetContextInterface {
 const defaultBudgetContectValue: BudgetContextInterface = {
   budgets: [],
   expenses: [],
-  showAddBudgetForm: false,
+  showAddOrEditBudgetForm: false,
   openAddOrEditBudgetForm: () => {},
-  closeAddBudgetForm: () => {},
+  closeAddOrEditBudgetForm: () => {},
   showAddExpenseForm: false,
   openAddExpenseForm: () => {},
   closeAddExpenseForm: () => {},
   showViewExpenses: false,
   openViewExpenses: () => {},
   closeViewExpenses: () => {},
+  showConfirmDeleteBudget: false,
+  openConfirmDeleteBudget: () => {},
+  closeConfirmDeleteBudget: () => {},
+  showConfirmDeleteExpense: false,
+  openConfirmDeleteExpense: () => {},
+  closeConfirmDeleteExpense: () => {},
   selectedBudgetId: undefined,
   getBudgetExpenses: () => [],
   addOrEditBudget: () => {},
@@ -58,14 +70,20 @@ export const BudgetProvider: FC = ({ children }) => {
   const [expenses, setExpenses] = useLocalStorage<
     BudgetContextInterface['expenses']
   >(Storage.EXPENSES, defaultBudgetContectValue.expenses)
-  const [showAddBudgetForm, setShowAddBudgetForm] = useState<
-    BudgetContextInterface['showAddBudgetForm']
-  >(defaultBudgetContectValue.showAddBudgetForm)
+  const [showAddOrEditBudgetForm, setShowAddOrEditBudgetForm] = useState<
+    BudgetContextInterface['showAddOrEditBudgetForm']
+  >(defaultBudgetContectValue.showAddOrEditBudgetForm)
   const [showAddExpenseForm, setShowAddExpenseForm] = useState<
     BudgetContextInterface['showAddExpenseForm']
   >(defaultBudgetContectValue.showAddExpenseForm)
   const [showViewExpenses, setShowViewExpenses] = useState<
     BudgetContextInterface['showViewExpenses']
+  >(defaultBudgetContectValue.showAddExpenseForm)
+  const [showConfirmDeleteBudget, setShowConfirmDeleteBudget] = useState<
+    BudgetContextInterface['showConfirmDeleteBudget']
+  >(defaultBudgetContectValue.showAddExpenseForm)
+  const [showConfirmDeleteExpense, setShowConfirmDeleteExpense] = useState<
+    BudgetContextInterface['showConfirmDeleteExpense']
   >(defaultBudgetContectValue.showAddExpenseForm)
   const [selectedBudgetId, selectBudgetId] = useState<
     BudgetContextInterface['selectedBudgetId']
@@ -73,11 +91,12 @@ export const BudgetProvider: FC = ({ children }) => {
 
   const openAddOrEditBudgetForm = (budgetId?: Budget['id']) => {
     selectBudgetId(budgetId)
-    setShowAddBudgetForm(true)
+    setShowAddOrEditBudgetForm(true)
   }
 
-  const closeAddBudgetForm = () => {
-    setShowAddBudgetForm(false)
+  const closeAddOrEditBudgetForm = () => {
+    selectBudgetId(undefined)
+    setShowAddOrEditBudgetForm(false)
   }
 
   const openAddExpenseForm = (budgetId?: Budget['id']) => {
@@ -86,6 +105,7 @@ export const BudgetProvider: FC = ({ children }) => {
   }
 
   const closeAddExpenseForm = () => {
+    selectBudgetId(undefined)
     setShowAddExpenseForm(false)
   }
 
@@ -95,7 +115,28 @@ export const BudgetProvider: FC = ({ children }) => {
   }
 
   const closeViewExpenses = () => {
+    selectBudgetId(undefined)
     setShowViewExpenses(false)
+  }
+
+  const openConfirmDeleteBudget = (budgetId: Budget['id']) => {
+    selectBudgetId(budgetId)
+    setShowConfirmDeleteBudget(true)
+  }
+
+  const closeConfirmDeleteBudget = () => {
+    selectBudgetId(undefined)
+    setShowConfirmDeleteBudget(false)
+  }
+
+  const openConfirmDeleteExpense = (expenseId: Expense['id']) => {
+    selectBudgetId(expenseId)
+    setShowConfirmDeleteExpense(true)
+  }
+
+  const closeConfirmDeleteExpense = () => {
+    selectBudgetId(undefined)
+    setShowConfirmDeleteExpense(false)
   }
 
   const getBudgetExpenses = (budgetId?: Budget['id']) =>
@@ -152,15 +193,21 @@ export const BudgetProvider: FC = ({ children }) => {
       value={{
         budgets,
         expenses,
-        showAddBudgetForm,
+        showAddOrEditBudgetForm,
         openAddOrEditBudgetForm,
-        closeAddBudgetForm,
+        closeAddOrEditBudgetForm,
         showAddExpenseForm,
         openAddExpenseForm,
         closeAddExpenseForm,
         showViewExpenses,
         openViewExpenses,
         closeViewExpenses,
+        showConfirmDeleteBudget,
+        openConfirmDeleteBudget,
+        closeConfirmDeleteBudget,
+        showConfirmDeleteExpense,
+        openConfirmDeleteExpense,
+        closeConfirmDeleteExpense,
         selectedBudgetId,
         getBudgetExpenses,
         addExpense,

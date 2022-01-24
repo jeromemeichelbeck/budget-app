@@ -3,6 +3,7 @@ import { Container } from 'react-bootstrap'
 import AddExpenseModal from './components/AddExpenseModal'
 import AddOrEditBudgetModal from './components/AddOrEditBudgetModal'
 import BudgetList from './components/BudgetList'
+import ConfirmDeleteBudgetModal from './components/ConfirmDeleteBudgetModal'
 import Header from './components/Header'
 import ViewExpensesModal from './components/ViewExpensesModal'
 import { BudgetProvider } from './context/BudgetContext'
@@ -19,6 +20,7 @@ const App: FC<AppProps> = () => {
       <AddOrEditBudgetModal />
       <AddExpenseModal />
       <ViewExpensesModal />
+      <ConfirmDeleteBudgetModal />
     </BudgetProvider>
   )
 }

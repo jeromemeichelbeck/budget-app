@@ -32,6 +32,7 @@ const ViewExpensesModal: FC<ViewExpensesModalProps> = () => {
   return (
     <Modal
       show={showViewExpenses}
+      centered
       onHide={() => {
         setReadyToDelete(false)
         closeViewExpenses()

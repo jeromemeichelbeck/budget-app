@@ -31,6 +31,7 @@ const AddExpenseModal: FC<AddExpenseModalProps> = () => {
   return (
     <Modal
       show={showAddExpenseForm}
+      centered
       onHide={() => {
         closeAddExpenseForm()
       }}
