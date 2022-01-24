@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FC, useState } from 'react'
 import { Button, Modal, Stack } from 'react-bootstrap'
 import { useBudgets } from '../context/BudgetContext'
@@ -28,11 +29,6 @@ const ViewExpensesModal: FC<ViewExpensesModalProps> = () => {
     0
   )
 
-  console.log({
-    currentBudget,
-    currentExpenses,
-  })
-
   return (
     <Modal
       show={showViewExpenses}
@@ -54,7 +50,7 @@ const ViewExpensesModal: FC<ViewExpensesModalProps> = () => {
                 }
               }}
             >
-              Delete
+              <FontAwesomeIcon icon="trash" />
             </Button>
           )}
         </Stack>
@@ -112,7 +108,7 @@ const ViewExpensesModal: FC<ViewExpensesModalProps> = () => {
                     deleteExpenseById(id)
                   }}
                 >
-                  X
+                  <FontAwesomeIcon icon="trash" />
                 </Button>
               </Stack>
             ))}

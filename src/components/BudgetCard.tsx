@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FC } from 'react'
 import { Button, Card, Stack } from 'react-bootstrap'
 import { useBudgets } from '../context/BudgetContext'
@@ -23,7 +24,8 @@ const BudgetCard: FC<BudgetCardProps> = ({
   gray,
   hideButtons,
 }) => {
-  const { openAddExpenseForm, openViewExpenses } = useBudgets()
+  const { openAddExpenseForm, openViewExpenses, openAddOrEditBudgetForm } =
+    useBudgets()
 
   const classNames: string[] = []
   if (maxAmount && amount > maxAmount) {
@@ -59,21 +61,55 @@ const BudgetCard: FC<BudgetCardProps> = ({
           <Stack direction="horizontal" gap={2} className="mt-4">
             <Button
               variant="outline-primary"
-              className="ms-auto"
+              title={
+                maxAmount
+                  ? `Add an Expense to ${name}`
+                  : 'Add an Uncategorized Expense'
+              }
               onClick={() => {
                 openAddExpenseForm(id)
               }}
             >
-              Add Expense
+              <FontAwesomeIcon icon="plus" />
             </Button>
             <Button
               variant="outline-secondary"
+              title={
+                maxAmount
+                  ? `View Expenses for ${name}`
+                  : 'View Uncategorized Expenses'
+              }
               onClick={() => {
                 openViewExpenses(id)
               }}
             >
-              View Expenses
+              <FontAwesomeIcon icon="list" />
             </Button>
+            {maxAmount && (
+              <>
+                <Button
+                  className="ms-auto"
+                  variant="outline-secondary"
+                  size="sm"
+                  title={`Edit ${name} Budget`}
+                  onClick={() => {
+                    openAddOrEditBudgetForm(id)
+                  }}
+                >
+                  <FontAwesomeIcon icon="edit" />
+                </Button>
+                <Button
+                  variant="outline-danger"
+                  size="sm"
+                  title={`Delete ${name} Budget`}
+                  onClick={() => {
+                    console.log(`delete budget ${id}: "${name}"`)
+                  }}
+                >
+                  <FontAwesomeIcon icon="trash" />
+                </Button>
+              </>
+            )}
           </Stack>
         )}
       </Card.Body>

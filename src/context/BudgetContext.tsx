@@ -9,7 +9,7 @@ interface BudgetContextInterface {
   budgets: Budget[]
   expenses: Expense[]
   showAddBudgetForm: boolean
-  openAddBudgetForm: () => void
+  openAddOrEditBudgetForm: (budgetId?: Budget['id']) => void
   closeAddBudgetForm: () => void
   showAddExpenseForm: boolean
   openAddExpenseForm: (budgetId?: Budget['id']) => void
@@ -19,7 +19,7 @@ interface BudgetContextInterface {
   closeViewExpenses: () => void
   selectedBudgetId?: Budget['id']
   getBudgetExpenses: (budgetId?: Budget['id']) => Expense[]
-  addBudget: (newBudget: BudgetDTO) => void
+  addOrEditBudget: (newBudget: BudgetDTO) => void
   deleteBudgetById: (budgetId: Budget['id']) => void
   addExpense: (newExpense: ExpenseDTO, budgetId: Budget['id'] | null) => void
   deleteExpenseById: (expenseId: Expense['id']) => void
@@ -29,7 +29,7 @@ const defaultBudgetContectValue: BudgetContextInterface = {
   budgets: [],
   expenses: [],
   showAddBudgetForm: false,
-  openAddBudgetForm: () => {},
+  openAddOrEditBudgetForm: () => {},
   closeAddBudgetForm: () => {},
   showAddExpenseForm: false,
   openAddExpenseForm: () => {},
@@ -39,7 +39,7 @@ const defaultBudgetContectValue: BudgetContextInterface = {
   closeViewExpenses: () => {},
   selectedBudgetId: undefined,
   getBudgetExpenses: () => [],
-  addBudget: () => {},
+  addOrEditBudget: () => {},
   deleteBudgetById: () => {},
   addExpense: () => {},
   deleteExpenseById: () => {},
@@ -71,7 +71,8 @@ export const BudgetProvider: FC = ({ children }) => {
     BudgetContextInterface['selectedBudgetId']
   >(defaultBudgetContectValue.selectedBudgetId)
 
-  const openAddBudgetForm = () => {
+  const openAddOrEditBudgetForm = (budgetId?: Budget['id']) => {
+    selectBudgetId(budgetId)
     setShowAddBudgetForm(true)
   }
 
@@ -100,17 +101,25 @@ export const BudgetProvider: FC = ({ children }) => {
   const getBudgetExpenses = (budgetId?: Budget['id']) =>
     expenses.filter((expense) => expense.budgetId === (budgetId || null))
 
-  const addBudget = (newBudget: BudgetDTO) => {
-    setBudgets((currentBudgets) => {
-      if (
-        currentBudgets.some(
-          (budget) => budget.name.toLowerCase() === newBudget.name.toLowerCase()
+  const addOrEditBudget = ({ id, name, maxAmount }: BudgetDTO) => {
+    if (id) {
+      setBudgets((currentBudgets) =>
+        currentBudgets.map((budget) =>
+          budget.id === id ? { id, name, maxAmount } : budget
         )
-      ) {
-        return currentBudgets
-      }
-      return [...currentBudgets, { ...newBudget, id: createId() }]
-    })
+      )
+    } else {
+      setBudgets((currentBudgets) => {
+        if (
+          currentBudgets.some(
+            (budget) => budget.name.toLowerCase() === name.toLowerCase()
+          )
+        ) {
+          return currentBudgets
+        }
+        return [...currentBudgets, { id: createId(), name, maxAmount }]
+      })
+    }
   }
 
   const deleteBudgetById = (budgetId: Budget['id']) => {
@@ -144,7 +153,7 @@ export const BudgetProvider: FC = ({ children }) => {
         budgets,
         expenses,
         showAddBudgetForm,
-        openAddBudgetForm,
+        openAddOrEditBudgetForm,
         closeAddBudgetForm,
         showAddExpenseForm,
         openAddExpenseForm,
@@ -155,7 +164,7 @@ export const BudgetProvider: FC = ({ children }) => {
         selectedBudgetId,
         getBudgetExpenses,
         addExpense,
-        addBudget,
+        addOrEditBudget: addOrEditBudget,
         deleteExpenseById,
         deleteBudgetById,
       }}

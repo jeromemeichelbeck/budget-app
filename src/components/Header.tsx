@@ -7,7 +7,7 @@ interface HeaderProps {
 }
 
 const Header: FC<HeaderProps> = ({ title }) => {
-  const { openAddBudgetForm, openAddExpenseForm } = useBudgets()
+  const { openAddOrEditBudgetForm, openAddExpenseForm } = useBudgets()
   return (
     <header>
       <Stack direction="horizontal" gap={2} className="mb-4">
@@ -15,7 +15,7 @@ const Header: FC<HeaderProps> = ({ title }) => {
         <Button
           variant="primary"
           onClick={() => {
-            openAddBudgetForm()
+            openAddOrEditBudgetForm()
           }}
         >
           Add Buget

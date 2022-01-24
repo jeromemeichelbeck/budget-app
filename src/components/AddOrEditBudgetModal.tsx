@@ -1,21 +1,45 @@
-import { FC, FormEventHandler, useRef } from 'react'
+import { FC, FormEventHandler, useEffect, useRef, useState } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
 import { useBudgets } from '../context/BudgetContext'
+import { Budget } from '../types/Budget'
 
-interface AddBudgetModalProps {}
+interface AddOrEditBudgetModalProps {}
 
-const AddBudgetModal: FC<AddBudgetModalProps> = () => {
-  const { showAddBudgetForm, closeAddBudgetForm } = useBudgets()
+const AddOrEditBudgetModal: FC<AddOrEditBudgetModalProps> = () => {
+  const {
+    selectedBudgetId,
+    budgets,
+    showAddBudgetForm,
+    addOrEditBudget: addBudget,
+    closeAddBudgetForm,
+  } = useBudgets()
 
-  const nameRef = useRef<HTMLInputElement>(null)
-  const maxAmountRef = useRef<HTMLInputElement>(null)
-  const { addBudget } = useBudgets()
+  const [currentBudget, setCurrentBudget] = useState<Budget>()
+
+  const nameRef = useRef<HTMLInputElement | null>(null)
+  const maxAmountRef = useRef<HTMLInputElement | null>(null)
+
+  useEffect(() => {
+    setCurrentBudget(
+      selectedBudgetId
+        ? budgets.find((budget) => budget.id === selectedBudgetId)
+        : undefined
+    )
+
+    if (nameRef.current) {
+      nameRef.current.value = currentBudget?.name || ''
+    }
+    if (maxAmountRef.current) {
+      maxAmountRef.current.value = currentBudget?.maxAmount.toString() || ''
+    }
+  })
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()
 
     if (nameRef.current?.value && maxAmountRef.current?.value) {
       addBudget({
+        id: selectedBudgetId,
         name: nameRef.current.value,
         maxAmount: parseFloat(maxAmountRef.current.value),
       })
@@ -32,7 +56,7 @@ const AddBudgetModal: FC<AddBudgetModalProps> = () => {
     >
       <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
-          <Modal.Title>New Budget</Modal.Title>
+          <Modal.Title>{currentBudget ? 'Edit' : 'New'} Budget</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="mb-3" controlId="name">
@@ -51,7 +75,7 @@ const AddBudgetModal: FC<AddBudgetModalProps> = () => {
           </Form.Group>
           <div className="d-flex justify-content-end">
             <Button variant="primary" type="submit">
-              Add
+              {currentBudget ? 'Update' : 'Add'}
             </Button>
           </div>
         </Modal.Body>
@@ -60,4 +84,4 @@ const AddBudgetModal: FC<AddBudgetModalProps> = () => {
   )
 }
 
-export default AddBudgetModal
+export default AddOrEditBudgetModal
