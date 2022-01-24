@@ -1,20 +1,21 @@
 import { FC, useEffect, useState } from 'react'
 import { Button, Modal, Stack } from 'react-bootstrap'
-import { useBudgets } from '../context/BudgetContext'
+import { useAppContext } from '../context/AppContext'
 import { Budget } from '../types/Budget'
 import CurrencyFormatter from './CurrencyFormatter'
 
 interface ConfirmDeleteBudgetModalProps {}
 
 const ConfirmDeleteBudgetModal: FC<ConfirmDeleteBudgetModalProps> = () => {
+  const { budget } = useAppContext()
   const {
-    selectedBudgetId,
     budgets,
-    getBudgetExpenses,
+    selectedBudgetId,
+    getExpensesByBudgetId,
     deleteBudgetById,
     showConfirmDeleteBudget,
     closeConfirmDeleteBudget,
-  } = useBudgets()
+  } = budget
 
   const [budgetName, setBudgetName] = useState<Budget['name']>('')
   const [countExpenses, setCountExpenses] = useState<number>(0)
@@ -25,7 +26,7 @@ const ConfirmDeleteBudgetModal: FC<ConfirmDeleteBudgetModalProps> = () => {
       setBudgetName(
         budgets.find((budget) => budget.id === selectedBudgetId)?.name || ''
       )
-      const expenses = getBudgetExpenses(selectedBudgetId)
+      const expenses = getExpensesByBudgetId(selectedBudgetId)
       setCountExpenses(expenses.length)
       setTotalAmountExpenses(
         expenses.reduce((total, expense) => total + expense.amount, 0)

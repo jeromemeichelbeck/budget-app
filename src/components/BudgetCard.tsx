@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FC } from 'react'
 import { Button, Card, Stack } from 'react-bootstrap'
-import { useBudgets } from '../context/BudgetContext'
+import { useAppContext } from '../context/AppContext'
 import { Budget } from '../types/Budget'
 import { Expense } from '../types/Expense'
 import BudgetProgressBar from './BudgetProgressBar'
@@ -24,12 +24,9 @@ const BudgetCard: FC<BudgetCardProps> = ({
   gray,
   hideButtons,
 }) => {
-  const {
-    openAddExpenseForm,
-    openViewExpenses,
-    openAddOrEditBudgetForm,
-    openConfirmDeleteBudget,
-  } = useBudgets()
+  const { budget, expense } = useAppContext()
+  const { openAddOrEditBudgetForm, openConfirmDeleteBudget } = budget
+  const { openViewExpenses, openAddOrEditExpenseForm } = expense
 
   const classNames: string[] = []
   if (maxAmount && amount > maxAmount) {
@@ -71,7 +68,7 @@ const BudgetCard: FC<BudgetCardProps> = ({
                   : 'Add an Uncategorized Expense'
               }
               onClick={() => {
-                openAddExpenseForm(id)
+                openAddOrEditExpenseForm(id)
               }}
             >
               <FontAwesomeIcon icon="plus" />

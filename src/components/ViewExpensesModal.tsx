@@ -1,100 +1,49 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Button, Modal, Stack } from 'react-bootstrap'
-import { useBudgets } from '../context/BudgetContext'
+import { useAppContext } from '../context/AppContext'
+import { Budget } from '../types/Budget'
+import { Expense } from '../types/Expense'
 import CurrencyFormatter from './CurrencyFormatter'
 
 interface ViewExpensesModalProps {}
 
 const ViewExpensesModal: FC<ViewExpensesModalProps> = () => {
-  const [readyToDelete, setReadyToDelete] = useState<boolean>(false)
-
+  const { budget, expense } = useAppContext()
+  const { selectedBudgetId, getBudgetById, getExpensesByBudgetId } = budget
   const {
     showViewExpenses,
-    selectedBudgetId,
-    budgets,
     closeViewExpenses,
-    openAddExpenseForm,
-    getBudgetExpenses,
-    deleteBudgetById,
-    deleteExpenseById,
-  } = useBudgets()
+    openAddOrEditExpenseForm,
+    showConfirmDeleteExpense,
+    openConfirmDeleteExpense,
+  } = expense
 
-  const currentBudget = budgets.find((budget) => budget.id === selectedBudgetId)
-  const currentExpenses = getBudgetExpenses(selectedBudgetId)
+  const [currentBudget, setCurrentBudget] = useState<Budget>()
+  const [currentExpenses, setCurrentExpenses] = useState<Expense[]>()
 
-  const countExpenses = currentExpenses.length
-  const totalAmountExpenses = currentExpenses.reduce(
-    (total, expense) => total + expense.amount,
-    0
-  )
+  useEffect(() => {
+    if (selectedBudgetId) {
+      setCurrentBudget(
+        selectedBudgetId ? getBudgetById(selectedBudgetId) : undefined
+      )
+      setCurrentExpenses(getExpensesByBudgetId(selectedBudgetId))
+    }
+  }, [selectedBudgetId, showConfirmDeleteExpense])
 
   return (
     <Modal
       show={showViewExpenses}
       centered
       onHide={() => {
-        setReadyToDelete(false)
         closeViewExpenses()
       }}
     >
       <Modal.Header closeButton>
-        <Stack direction="horizontal" gap={2}>
-          <Modal.Title>{currentBudget?.name || 'Uncategorized'}</Modal.Title>
-          {selectedBudgetId && !readyToDelete && (
-            <Button
-              variant="outline-danger"
-              disabled={readyToDelete}
-              onClick={() => {
-                if (selectedBudgetId) {
-                  setReadyToDelete(true)
-                }
-              }}
-            >
-              <FontAwesomeIcon icon="trash" />
-            </Button>
-          )}
-        </Stack>
+        <Modal.Title>{currentBudget?.name || 'Uncategorized'}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {readyToDelete && currentBudget ? (
-          <Stack gap={3}>
-            <div>Delete {currentBudget.name}?</div>
-            {countExpenses > 0 ? (
-              <div>
-                {countExpenses} expense{countExpenses !== 1 && 's'} will be
-                uncategorized, for a total amount of{' '}
-                <strong>
-                  <CurrencyFormatter amount={totalAmountExpenses} />
-                </strong>{' '}
-              </div>
-            ) : (
-              <div>This budget contains no expenses</div>
-            )}
-            <Stack direction="horizontal" gap={2}>
-              <Button
-                variant="danger"
-                onClick={() => {
-                  if (selectedBudgetId) {
-                    deleteBudgetById(selectedBudgetId)
-                  }
-                  setReadyToDelete(false)
-                  closeViewExpenses()
-                }}
-              >
-                Delete
-              </Button>
-              <Button
-                variant="outline-secondary"
-                onClick={() => {
-                  setReadyToDelete(false)
-                }}
-              >
-                Cancel
-              </Button>
-            </Stack>
-          </Stack>
-        ) : countExpenses ? (
+        {currentExpenses?.length ? (
           <Stack gap={3}>
             {currentExpenses.map(({ id, description, amount }) => (
               <Stack key={id} direction="horizontal" gap={2}>
@@ -106,7 +55,7 @@ const ViewExpensesModal: FC<ViewExpensesModalProps> = () => {
                   size="sm"
                   variant="outline-danger"
                   onClick={() => {
-                    deleteExpenseById(id)
+                    openConfirmDeleteExpense(id)
                   }}
                 >
                   <FontAwesomeIcon icon="trash" />
@@ -126,7 +75,7 @@ const ViewExpensesModal: FC<ViewExpensesModalProps> = () => {
         <Button
           variant="primary"
           onClick={() => {
-            openAddExpenseForm(currentBudget?.id)
+            openAddOrEditExpenseForm(currentBudget?.id)
           }}
         >
           Add Expense

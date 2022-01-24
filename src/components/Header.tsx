@@ -1,13 +1,15 @@
 import { FC } from 'react'
 import { Button, Stack } from 'react-bootstrap'
-import { useBudgets } from '../context/BudgetContext'
+import { useAppContext } from '../context/AppContext'
 
 interface HeaderProps {
   title: string
 }
 
 const Header: FC<HeaderProps> = ({ title }) => {
-  const { openAddOrEditBudgetForm, openAddExpenseForm } = useBudgets()
+  const { budget, expense } = useAppContext()
+  const { openAddOrEditBudgetForm } = budget
+  const { openAddOrEditExpenseForm } = expense
   return (
     <header>
       <Stack direction="horizontal" gap={2} className="mb-4">
@@ -23,7 +25,7 @@ const Header: FC<HeaderProps> = ({ title }) => {
         <Button
           variant="outline-primary"
           onClick={() => {
-            openAddExpenseForm()
+            openAddOrEditExpenseForm()
           }}
         >
           Add Expense

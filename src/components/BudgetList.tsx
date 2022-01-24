@@ -1,12 +1,14 @@
 import { FC } from 'react'
-import { useBudgets } from '../context/BudgetContext'
+import { useAppContext } from '../context/AppContext'
 import BudgetCard from './BudgetCard'
 import Grid from './Grid'
 
 interface BudgetListProps {}
 
 const BudgetList: FC<BudgetListProps> = () => {
-  const { budgets, expenses, getBudgetExpenses } = useBudgets()
+  const { budget, expense } = useAppContext()
+  const { budgets, getExpensesByBudgetId } = budget
+  const { expenses } = expense
 
   return (
     <Grid minWidth={300} gap={1} align="start">
@@ -15,7 +17,7 @@ const BudgetList: FC<BudgetListProps> = () => {
           key={id}
           id={id}
           name={name}
-          amount={getBudgetExpenses(id).reduce(
+          amount={getExpensesByBudgetId(id).reduce(
             (total, expense) => total + expense.amount,
             0
           )}
@@ -24,7 +26,7 @@ const BudgetList: FC<BudgetListProps> = () => {
       ))}
       <BudgetCard
         name="Uncategorized"
-        amount={getBudgetExpenses().reduce(
+        amount={getExpensesByBudgetId().reduce(
           (total, expense) => total + expense.amount,
           0
         )}

@@ -4,15 +4,16 @@ import AddExpenseModal from './components/AddExpenseModal'
 import AddOrEditBudgetModal from './components/AddOrEditBudgetModal'
 import BudgetList from './components/BudgetList'
 import ConfirmDeleteBudgetModal from './components/ConfirmDeleteBudgetModal'
+import ConfirmDeleteExpenseModal from './components/ConfirmDeleteExpenseModal'
 import Header from './components/Header'
 import ViewExpensesModal from './components/ViewExpensesModal'
-import { BudgetProvider } from './context/BudgetContext'
+import { AppProvider } from './context/AppContext'
 
 interface AppProps {}
 
 const App: FC<AppProps> = () => {
   return (
-    <BudgetProvider>
+    <AppProvider>
       <Container className="my-4">
         <Header title="Budgets" />
         <BudgetList />
@@ -21,7 +22,8 @@ const App: FC<AppProps> = () => {
       <AddExpenseModal />
       <ViewExpensesModal />
       <ConfirmDeleteBudgetModal />
-    </BudgetProvider>
+      <ConfirmDeleteExpenseModal />
+    </AppProvider>
   )
 }
 

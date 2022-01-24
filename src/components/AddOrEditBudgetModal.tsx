@@ -1,18 +1,19 @@
 import { FC, FormEventHandler, useEffect, useRef, useState } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
-import { useBudgets } from '../context/BudgetContext'
+import { useAppContext } from '../context/AppContext'
 import { Budget } from '../types/Budget'
 
 interface AddOrEditBudgetModalProps {}
 
 const AddOrEditBudgetModal: FC<AddOrEditBudgetModalProps> = () => {
+  const { budget } = useAppContext()
   const {
     selectedBudgetId,
-    budgets,
-    showAddOrEditBudgetForm: showAddBudgetForm,
+    getBudgetById,
     addOrEditBudget,
+    showAddOrEditBudgetForm,
     closeAddOrEditBudgetForm,
-  } = useBudgets()
+  } = budget
 
   const [currentBudget, setCurrentBudget] = useState<Budget>()
 
@@ -21,9 +22,7 @@ const AddOrEditBudgetModal: FC<AddOrEditBudgetModalProps> = () => {
 
   useEffect(() => {
     setCurrentBudget(
-      selectedBudgetId
-        ? budgets.find((budget) => budget.id === selectedBudgetId)
-        : undefined
+      selectedBudgetId ? getBudgetById(selectedBudgetId) : undefined
     )
 
     if (nameRef.current) {
@@ -49,7 +48,7 @@ const AddOrEditBudgetModal: FC<AddOrEditBudgetModalProps> = () => {
 
   return (
     <Modal
-      show={showAddBudgetForm}
+      show={showAddOrEditBudgetForm}
       centered
       onHide={() => {
         closeAddOrEditBudgetForm()

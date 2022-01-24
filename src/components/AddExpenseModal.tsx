@@ -1,39 +1,43 @@
 import { FC, FormEventHandler, useRef } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
-import { useBudgets } from '../context/BudgetContext'
+import { useAppContext } from '../context/AppContext'
 
 interface AddExpenseModalProps {}
 
 const AddExpenseModal: FC<AddExpenseModalProps> = () => {
-  const { showAddExpenseForm, closeAddExpenseForm, selectedBudgetId } =
-    useBudgets()
+  const { budget, expense } = useAppContext()
+  const { budgets, selectedBudgetId } = budget
+  const {
+    addOrEditExpense,
+    showAddOrEditExpenseForm,
+    closeAddOrEditExpenseForm,
+  } = expense
 
   const budgetIdRef = useRef<HTMLSelectElement>(null)
   const descriptionRef = useRef<HTMLInputElement>(null)
   const amountRef = useRef<HTMLInputElement>(null)
-  const { addExpense, budgets } = useBudgets()
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()
 
     if (descriptionRef.current?.value && amountRef.current?.value) {
-      addExpense(
+      addOrEditExpense(
         {
           description: descriptionRef.current.value,
           amount: parseFloat(amountRef.current.value),
         },
         budgetIdRef.current?.value || null
       )
-      closeAddExpenseForm()
+      closeAddOrEditExpenseForm()
     }
   }
 
   return (
     <Modal
-      show={showAddExpenseForm}
+      show={showAddOrEditExpenseForm}
       centered
       onHide={() => {
-        closeAddExpenseForm()
+        closeAddOrEditExpenseForm()
       }}
     >
       <Form onSubmit={handleSubmit}>
