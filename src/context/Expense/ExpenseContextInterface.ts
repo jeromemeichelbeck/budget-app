@@ -15,7 +15,10 @@ export interface ExpenseContextInterface {
   openViewExpenses: (budgetId?: Budget['id']) => void
   closeViewExpenses: () => void
   showAddOrEditExpenseForm: boolean
-  openAddOrEditExpenseForm: (budgetId?: Budget['id']) => void
+  openAddOrEditExpenseForm: (
+    budgetId?: Budget['id'],
+    expenseId?: Expense['id']
+  ) => void
   closeAddOrEditExpenseForm: () => void
   showConfirmDeleteExpense: boolean
   openConfirmDeleteExpense: (expenseId: Expense['id']) => void

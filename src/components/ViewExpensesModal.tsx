@@ -23,12 +23,10 @@ const ViewExpensesModal: FC<ViewExpensesModalProps> = () => {
   const [currentExpenses, setCurrentExpenses] = useState<Expense[]>()
 
   useEffect(() => {
-    if (selectedBudgetId) {
-      setCurrentBudget(
-        selectedBudgetId ? getBudgetById(selectedBudgetId) : undefined
-      )
-      setCurrentExpenses(getExpensesByBudgetId(selectedBudgetId))
-    }
+    setCurrentBudget(
+      selectedBudgetId ? getBudgetById(selectedBudgetId) : undefined
+    )
+    setCurrentExpenses(getExpensesByBudgetId(selectedBudgetId))
   }, [selectedBudgetId, showConfirmDeleteExpense])
 
   return (
@@ -51,6 +49,15 @@ const ViewExpensesModal: FC<ViewExpensesModalProps> = () => {
                 <div className="fs-5">
                   <CurrencyFormatter amount={amount} />
                 </div>
+                <Button
+                  size="sm"
+                  variant="outline-secondary"
+                  onClick={() => {
+                    openAddOrEditExpenseForm(currentBudget?.id, id)
+                  }}
+                >
+                  <FontAwesomeIcon icon="edit" />
+                </Button>
                 <Button
                   size="sm"
                   variant="outline-danger"

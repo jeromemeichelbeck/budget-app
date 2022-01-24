@@ -1,7 +1,6 @@
-import { FC, FormEventHandler, useEffect, useRef, useState } from 'react'
+import { FC, FormEventHandler, useEffect, useRef } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
 import { useAppContext } from '../context/AppContext'
-import { Budget } from '../types/Budget'
 
 interface AddOrEditBudgetModalProps {}
 
@@ -15,23 +14,21 @@ const AddOrEditBudgetModal: FC<AddOrEditBudgetModalProps> = () => {
     closeAddOrEditBudgetForm,
   } = budget
 
-  const [currentBudget, setCurrentBudget] = useState<Budget>()
-
   const nameRef = useRef<HTMLInputElement | null>(null)
   const maxAmountRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
-    setCurrentBudget(
-      selectedBudgetId ? getBudgetById(selectedBudgetId) : undefined
-    )
+    const budget = selectedBudgetId
+      ? getBudgetById(selectedBudgetId)
+      : undefined
 
     if (nameRef.current) {
-      nameRef.current.value = currentBudget?.name || ''
+      nameRef.current.value = budget?.name || ''
     }
     if (maxAmountRef.current) {
-      maxAmountRef.current.value = currentBudget?.maxAmount.toString() || ''
+      maxAmountRef.current.value = budget?.maxAmount.toString() || ''
     }
-  })
+  }, [selectedBudgetId, nameRef, maxAmountRef])
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()
@@ -56,7 +53,7 @@ const AddOrEditBudgetModal: FC<AddOrEditBudgetModalProps> = () => {
     >
       <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
-          <Modal.Title>{currentBudget ? 'Edit' : 'New'} Budget</Modal.Title>
+          <Modal.Title>{selectedBudgetId ? 'Edit' : 'New'} Budget</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="mb-3" controlId="name">
@@ -75,7 +72,7 @@ const AddOrEditBudgetModal: FC<AddOrEditBudgetModalProps> = () => {
           </Form.Group>
           <div className="d-flex justify-content-end">
             <Button variant="primary" type="submit">
-              {currentBudget ? 'Update' : 'Add'}
+              {selectedBudgetId ? 'Update' : 'Add'}
             </Button>
           </div>
         </Modal.Body>

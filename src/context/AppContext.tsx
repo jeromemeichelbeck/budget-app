@@ -119,13 +119,21 @@ export const AppProvider: FC = ({ children }) => {
     expenses.find((expense) => expense.id === expenseId)
 
   const addOrEditExpense = (
-    expense: ExpenseDTO,
+    { id, description, amount }: ExpenseDTO,
     budgetId: Budget['id'] | null
   ) => {
-    setExpenses((currentExpenses) => [
-      ...currentExpenses,
-      { ...expense, id: createId(), budgetId },
-    ])
+    if (id) {
+      setExpenses((currentExpenses) =>
+        currentExpenses.map((expense) =>
+          expense.id === id ? { id, budgetId, description, amount } : expense
+        )
+      )
+    } else {
+      setExpenses((currentExpenses) => [
+        ...currentExpenses,
+        { description, amount, id: createId(), budgetId },
+      ])
+    }
   }
 
   const deleteExpenseById = (expenseId: Expense['id']) => {
@@ -161,8 +169,12 @@ export const AppProvider: FC = ({ children }) => {
     ExpenseContextInterface['showAddOrEditExpenseForm']
   >(defaultExpenseContextValue.showAddOrEditExpenseForm)
 
-  const openAddOrEditExpenseForm = (budgetId?: Budget['id']) => {
+  const openAddOrEditExpenseForm = (
+    budgetId?: Budget['id'],
+    expenseId?: Expense['id']
+  ) => {
     selectBudgetId(budgetId)
+    selectExpenseId(expenseId)
     setShowAddOrEditExpenseForm(true)
   }
   const closeAddOrEditExpenseForm = () => {

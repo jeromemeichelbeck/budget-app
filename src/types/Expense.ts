@@ -8,6 +8,7 @@ export type Expense = {
 }
 
 export interface ExpenseDTO {
+  id?: Expense['id']
   amount: Expense['amount']
   description: Expense['description']
 }

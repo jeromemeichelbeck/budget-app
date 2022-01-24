@@ -1,21 +1,35 @@
-import { FC, FormEventHandler, useRef } from 'react'
+import { FC, FormEventHandler, useEffect, useRef } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
 import { useAppContext } from '../context/AppContext'
 
-interface AddExpenseModalProps {}
+interface AddOrEditExpenseModalProps {}
 
-const AddExpenseModal: FC<AddExpenseModalProps> = () => {
+const AddOrEditExpenseModal: FC<AddOrEditExpenseModalProps> = () => {
   const { budget, expense } = useAppContext()
   const { budgets, selectedBudgetId } = budget
   const {
+    selectedExpenseId,
+    getExpenseById,
     addOrEditExpense,
     showAddOrEditExpenseForm,
     closeAddOrEditExpenseForm,
   } = expense
 
   const budgetIdRef = useRef<HTMLSelectElement>(null)
-  const descriptionRef = useRef<HTMLInputElement>(null)
-  const amountRef = useRef<HTMLInputElement>(null)
+  const descriptionRef = useRef<HTMLInputElement | null>(null)
+  const amountRef = useRef<HTMLInputElement | null>(null)
+
+  useEffect(() => {
+    const expense = selectedExpenseId
+      ? getExpenseById(selectedExpenseId)
+      : undefined
+    if (descriptionRef.current) {
+      descriptionRef.current.value = expense?.description || ''
+    }
+    if (amountRef.current) {
+      amountRef.current.value = expense?.amount.toString() || ''
+    }
+  }, [selectedExpenseId, descriptionRef, amountRef])
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()
@@ -23,6 +37,7 @@ const AddExpenseModal: FC<AddExpenseModalProps> = () => {
     if (descriptionRef.current?.value && amountRef.current?.value) {
       addOrEditExpense(
         {
+          id: selectedExpenseId,
           description: descriptionRef.current.value,
           amount: parseFloat(amountRef.current.value),
         },
@@ -42,7 +57,9 @@ const AddExpenseModal: FC<AddExpenseModalProps> = () => {
     >
       <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
-          <Modal.Title>New Expense</Modal.Title>
+          <Modal.Title>
+            {selectedExpenseId ? 'Edit' : 'New'} Expense
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="mb-3" controlId="budgetId">
@@ -72,7 +89,7 @@ const AddExpenseModal: FC<AddExpenseModalProps> = () => {
           </Form.Group>
           <div className="d-flex justify-content-end">
             <Button variant="primary" type="submit">
-              Add
+              {selectedExpenseId ? 'Update' : 'Add'}
             </Button>
           </div>
         </Modal.Body>
@@ -81,4 +98,4 @@ const AddExpenseModal: FC<AddExpenseModalProps> = () => {
   )
 }
 
-export default AddExpenseModal
+export default AddOrEditExpenseModal
