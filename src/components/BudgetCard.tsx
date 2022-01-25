@@ -42,11 +42,15 @@ const BudgetCard: FC<BudgetCardProps> = ({
   return (
     <Card className={classNames.join(' ')}>
       <Card.Body>
-        <Card.Title className="d-flex justify-content-between align-items-baseline fw-normal mb-3">
+        <Card.Title
+          className={`d-flex justify-content-between align-items-baseline${
+            hideButtons ? ' ' : ' fw-normal '
+          }mb-3`}
+        >
           <div className="me-2">{name}</div>
           <div className="d-flex align-items-baseline">
             <CurrencyFormatter amount={amount} />
-            {maxAmount && (
+            {!!maxAmount && (
               <span className="text-muted fs-6 ms-2">
                 {'/ '}
                 <CurrencyFormatter amount={maxAmount} />
@@ -54,7 +58,7 @@ const BudgetCard: FC<BudgetCardProps> = ({
             )}
           </div>
         </Card.Title>
-        {maxAmount && (
+        {!!maxAmount && (
           <BudgetProgressBar amount={amount} maxAmount={maxAmount} />
         )}
 
@@ -86,7 +90,7 @@ const BudgetCard: FC<BudgetCardProps> = ({
             >
               <FontAwesomeIcon icon="list" />
             </Button>
-            {maxAmount && (
+            {!!maxAmount && (
               <>
                 <Button
                   className="ms-auto"

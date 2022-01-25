@@ -27,7 +27,11 @@ const ConfirmDeleteExpenseModal: FC<ConfirmDeleteExpenseModalProps> = () => {
   }, [selectedExpenseId])
 
   return (
-    <Modal show={showConfirmDeleteExpense} centered>
+    <Modal
+      show={showConfirmDeleteExpense}
+      centered
+      className="bg-danger bg-opacity-10"
+    >
       <Modal.Header>
         <Modal.Title>Delete Expense {expenseName}?</Modal.Title>
       </Modal.Header>
