@@ -47,7 +47,21 @@ const BudgetCard: FC<BudgetCardProps> = ({
             hideButtons ? ' ' : ' fw-normal '
           }mb-3`}
         >
-          <div className="me-2">{name}</div>
+          <div className="me-2">
+            {hideButtons ? (
+              <span>{name}</span>
+            ) : (
+              <Button
+                variant="link"
+                className="p-0 text-decoration-none text-dark"
+                onClick={() => {
+                  openViewExpenses(id)
+                }}
+              >
+                {name}
+              </Button>
+            )}
+          </div>
           <div className="d-flex align-items-baseline">
             <CurrencyFormatter amount={amount} />
             {!!maxAmount && (
