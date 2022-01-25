@@ -39,7 +39,7 @@ export const AppProvider: FC = ({ children }) => {
   >(defaultBudgetContextValue.selectedBudgetId)
 
   const getBudgetById = (budgetId: Budget['id']) =>
-    budgets.find((budget) => (budget.id = budgetId))
+    budgets.find((budget) => budget.id === budgetId)
 
   const addOrEditBudget = ({ id, name, maxAmount }: BudgetDTO) => {
     if (id) {
@@ -86,7 +86,6 @@ export const AppProvider: FC = ({ children }) => {
     setShowAddOrEditBudgetForm(true)
   }
   const closeAddOrEditBudgetForm = () => {
-    selectBudgetId(undefined)
     setShowAddOrEditBudgetForm(false)
   }
 
@@ -99,7 +98,6 @@ export const AppProvider: FC = ({ children }) => {
     setShowConfirmDeleteBudget(true)
   }
   const closeConfirmDeleteBudget = () => {
-    selectBudgetId(undefined)
     setShowConfirmDeleteBudget(false)
   }
 
@@ -161,7 +159,6 @@ export const AppProvider: FC = ({ children }) => {
     setShowViewExpenses(true)
   }
   const closeViewExpenses = () => {
-    selectBudgetId(undefined)
     setShowViewExpenses(false)
   }
 
@@ -178,7 +175,6 @@ export const AppProvider: FC = ({ children }) => {
     setShowAddOrEditExpenseForm(true)
   }
   const closeAddOrEditExpenseForm = () => {
-    selectBudgetId(undefined)
     setShowAddOrEditExpenseForm(false)
   }
 
@@ -187,12 +183,10 @@ export const AppProvider: FC = ({ children }) => {
   >(defaultExpenseContextValue.showConfirmDeleteExpense)
 
   const openConfirmDeleteExpense = (expenseId: Expense['id']) => {
-    console.log({ expenseId })
     selectExpenseId(expenseId)
     setShowConfirmDeleteExpense(true)
   }
   const closeConfirmDeleteExpense = () => {
-    selectExpenseId(undefined)
     setShowConfirmDeleteExpense(false)
   }
 

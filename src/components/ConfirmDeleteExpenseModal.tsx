@@ -18,7 +18,6 @@ const ConfirmDeleteExpenseModal: FC<ConfirmDeleteExpenseModalProps> = () => {
   const [expenseName, setExpenseName] = useState<Expense['description']>('')
 
   useEffect(() => {
-    console.log({ selectedExpenseId })
     if (selectedExpenseId) {
       const expense = getExpenseById(selectedExpenseId)
       setExpenseName(expense?.description || '')

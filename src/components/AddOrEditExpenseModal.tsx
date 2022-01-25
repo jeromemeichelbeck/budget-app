@@ -20,16 +20,16 @@ const AddOrEditExpenseModal: FC<AddOrEditExpenseModalProps> = () => {
   const amountRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
-    const expense = selectedExpenseId
+    const currentExpense = selectedExpenseId
       ? getExpenseById(selectedExpenseId)
       : undefined
     if (descriptionRef.current) {
-      descriptionRef.current.value = expense?.description || ''
+      descriptionRef.current.value = currentExpense?.description || ''
     }
     if (amountRef.current) {
-      amountRef.current.value = expense?.amount.toString() || ''
+      amountRef.current.value = currentExpense?.amount.toString() || ''
     }
-  }, [selectedExpenseId, descriptionRef, amountRef])
+  }, [selectedExpenseId, descriptionRef, amountRef, showAddOrEditExpenseForm])
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()

@@ -18,17 +18,16 @@ const AddOrEditBudgetModal: FC<AddOrEditBudgetModalProps> = () => {
   const maxAmountRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
-    const budget = selectedBudgetId
+    const currentBudget = selectedBudgetId
       ? getBudgetById(selectedBudgetId)
       : undefined
-
     if (nameRef.current) {
-      nameRef.current.value = budget?.name || ''
+      nameRef.current.value = currentBudget?.name || ''
     }
     if (maxAmountRef.current) {
-      maxAmountRef.current.value = budget?.maxAmount.toString() || ''
+      maxAmountRef.current.value = currentBudget?.maxAmount.toString() || ''
     }
-  }, [selectedBudgetId, nameRef, maxAmountRef])
+  }, [selectedBudgetId, nameRef, maxAmountRef, showAddOrEditBudgetForm])
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()

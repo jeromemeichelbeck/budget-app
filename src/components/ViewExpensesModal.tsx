@@ -12,10 +12,10 @@ const ViewExpensesModal: FC<ViewExpensesModalProps> = () => {
   const { budget, expense } = useAppContext()
   const { selectedBudgetId, getBudgetById, getExpensesByBudgetId } = budget
   const {
+    expenses,
     showViewExpenses,
     closeViewExpenses,
     openAddOrEditExpenseForm,
-    showConfirmDeleteExpense,
     openConfirmDeleteExpense,
   } = expense
 
@@ -27,7 +27,7 @@ const ViewExpensesModal: FC<ViewExpensesModalProps> = () => {
       selectedBudgetId ? getBudgetById(selectedBudgetId) : undefined
     )
     setCurrentExpenses(getExpensesByBudgetId(selectedBudgetId))
-  }, [selectedBudgetId, showConfirmDeleteExpense])
+  }, [selectedBudgetId, expenses])
 
   return (
     <Modal
